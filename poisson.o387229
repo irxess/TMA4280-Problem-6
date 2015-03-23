@@ -1,0 +1,280 @@
+Warning: Permanently added 'compute-0-30' (RSA) to the list of known hosts.
+chown: cannot access `/state/partition1/scratch/pbstmp.387229.rocks.hpc.ntnu.no': No such file or directory
+Warning: Permanently added 'compute-0-31' (RSA) to the list of known hosts.
+chown: cannot access `/state/partition1/scratch/pbstmp.387229.rocks.hpc.ntnu.no': No such file or directory
+Warning: Permanently added 'compute-1-7' (RSA) to the list of known hosts.
+.
+Running sequential solver with n = 1024
+ umax = 7.367130e-02 
+
+real	0m2.269s
+user	0m2.128s
+sys	0m0.011s
+.
+Running sequential solver with n = 2048
+ umax = 7.367134e-02 
+
+real	0m9.389s
+user	0m9.350s
+sys	0m0.037s
+.
+Running sequential solver with n = 4096
+ umax = 7.367135e-02 
+
+real	0m41.618s
+user	0m41.469s
+sys	0m0.141s
+.
+Running sequential solver with n = 8192
+ umax = 7.367135e-02 
+
+real	2m58.997s
+user	2m58.518s
+sys	0m0.446s
+.
+Running sequential solver with n = 16384
+ umax = 7.367135e-02 
+
+real	12m47.524s
+user	12m45.548s
+sys	0m1.817s
+.
+Running MPI solver with n = 1024, nodes = 3 and procs per node = 12
+ umax = 9.167848e-03 
+ umax = 2.524826e-02 
+ umax = 1.757147e-02 
+ umax = 3.856649e-02 
+ umax = 4.427719e-02 
+ umax = 4.939895e-02 
+ umax = 5.396171e-02 
+ umax = 6.456041e-02 
+ umax = 5.799316e-02 
+ umax = 6.151852e-02 
+ umax = 6.927104e-02 
+ umax = 6.713884e-02 
+ umax = 7.097149e-02 
+ umax = 3.223480e-02 
+ umax = 7.225188e-02 
+ umax = 6.531721e-02 
+ umax = 7.312110e-02 
+ umax = 6.240505e-02 
+ umax = 7.367130e-02 
+ umax = 7.358521e-02 
+ umax = 7.253243e-02 
+ umax = 7.364245e-02 
+ umax = 6.777093e-02 
+ umax = 5.901521e-02 
+ umax = 5.512579e-02 
+ umax = 5.071225e-02 
+ umax = 7.328940e-02 
+ umax = 4.574760e-02 
+ umax = 6.978270e-02 
+ umax = 3.404541e-02 
+ umax = 2.724299e-02 
+ umax = 1.976023e-02 
+ umax = 1.156082e-02 
+ umax = 2.607561e-03 
+ umax = 7.136623e-02 
+ umax = 4.020248e-02 
+Elapsed time: 0.143415 secs
+.
+Running MPI solver with n = 2048, nodes = 3 and procs per node = 12
+ umax = 6.643008e-02 
+ umax = 9.016369e-03 
+ umax = 2.486843e-02 
+ umax = 6.376840e-02 
+ umax = 3.177441e-02 
+ umax = 4.371429e-02 
+ umax = 3.804560e-02 
+ umax = 5.336458e-02 
+ umax = 4.881107e-02 
+ umax = 5.740141e-02 
+ umax = 6.401972e-02 
+ umax = 6.664255e-02 
+ umax = 6.094582e-02 
+ umax = 5.706734e-02 
+ umax = 7.196052e-02 
+ umax = 7.367134e-02 
+ umax = 6.883118e-02 
+ umax = 7.292203e-02 
+ umax = 7.349094e-02 
+ umax = 7.367080e-02 
+ umax = 7.345663e-02 
+ umax = 7.046126e-02 
+ umax = 6.065403e-02 
+ umax = 1.659655e-02 
+ umax = 6.865618e-02 
+ umax = 7.185725e-02 
+ umax = 7.285347e-02 
+ umax = 4.838612e-02 
+ umax = 5.298620e-02 
+ umax = 3.119450e-02 
+ umax = 2.423125e-02 
+ umax = 8.255537e-03 
+ umax = 3.752006e-02 
+ umax = 1.729401e-02 
+ umax = 7.059993e-02 
+ umax = 4.324036e-02 
+Elapsed time: 0.466752 secs
+.
+Running MPI solver with n = 4096, nodes = 3 and procs per node = 12
+ umax = 5.710092e-02 
+ umax = 7.367135e-02 
+ umax = 7.349095e-02 
+ umax = 5.302422e-02 
+ umax = 3.804561e-02 
+ umax = 4.371430e-02 
+ umax = 3.177441e-02 
+ umax = 4.842881e-02 
+ umax = 7.367098e-02 
+ umax = 7.292204e-02 
+ umax = 7.286047e-02 
+ umax = 3.757283e-02 
+ umax = 7.196053e-02 
+ umax = 6.379370e-02 
+ umax = 4.328795e-02 
+ umax = 6.068338e-02 
+ umax = 5.740141e-02 
+ umax = 1.729401e-02 
+ umax = 5.336459e-02 
+ umax = 3.125271e-02 
+ umax = 6.883119e-02 
+ umax = 2.486844e-02 
+ umax = 4.881107e-02 
+ umax = 7.346020e-02 
+ umax = 6.645148e-02 
+ umax = 6.401973e-02 
+ umax = 1.666654e-02 
+ umax = 6.094583e-02 
+ umax = 9.016370e-03 
+ umax = 2.429521e-02 
+ umax = 8.331878e-03 
+ umax = 7.059994e-02 
+ umax = 7.186772e-02 
+ umax = 7.047528e-02 
+ umax = 6.867384e-02 
+ umax = 6.664256e-02 
+Elapsed time: 1.862453 secs
+.
+Running MPI solver with n = 8192, nodes = 3 and procs per node = 12
+ umax = 7.367135e-02 
+ umax = 7.292204e-02 
+ umax = 7.349095e-02 
+ umax = 4.881107e-02 
+ umax = 4.845014e-02 
+ umax = 3.759920e-02 
+ umax = 7.367105e-02 
+ umax = 5.336459e-02 
+ umax = 3.177441e-02 
+ umax = 4.331174e-02 
+ umax = 5.304322e-02 
+ umax = 7.059994e-02 
+ umax = 5.711770e-02 
+ umax = 3.804561e-02 
+ umax = 4.371430e-02 
+ umax = 3.128180e-02 
+ umax = 7.196053e-02 
+ umax = 7.286396e-02 
+ umax = 5.740142e-02 
+ umax = 6.401974e-02 
+ umax = 7.187295e-02 
+ umax = 7.346198e-02 
+ umax = 7.048227e-02 
+ umax = 6.094583e-02 
+ umax = 6.883119e-02 
+ umax = 6.868265e-02 
+ umax = 6.664256e-02 
+ umax = 6.646217e-02 
+ umax = 2.432716e-02 
+ umax = 6.380633e-02 
+ umax = 1.670152e-02 
+ umax = 1.729401e-02 
+ umax = 8.370027e-03 
+ umax = 9.016371e-03 
+ umax = 6.069804e-02 
+ umax = 2.486844e-02 
+Elapsed time: 7.702734 secs
+.
+Running MPI solver with n = 16384, nodes = 3 and procs per node = 12
+ umax = 5.336459e-02 
+ umax = 4.881107e-02 
+ umax = 7.349095e-02 
+ umax = 5.740142e-02 
+ umax = 7.367135e-02 
+ umax = 7.292204e-02 
+ umax = 4.371430e-02 
+ umax = 3.177441e-02 
+ umax = 3.804561e-02 
+ umax = 6.401974e-02 
+ umax = 1.729401e-02 
+ umax = 6.094583e-02 
+ umax = 9.016371e-03 
+ umax = 2.486844e-02 
+ umax = 6.664256e-02 
+ umax = 7.367108e-02 
+ umax = 6.883119e-02 
+ umax = 5.712608e-02 
+ umax = 3.129634e-02 
+ umax = 7.187555e-02 
+ umax = 4.332362e-02 
+ umax = 7.196053e-02 
+ umax = 5.305271e-02 
+ umax = 4.846080e-02 
+ umax = 7.059994e-02 
+ umax = 3.761237e-02 
+ umax = 7.346286e-02 
+ umax = 7.048577e-02 
+ umax = 7.286570e-02 
+ umax = 6.868705e-02 
+ umax = 2.434314e-02 
+ umax = 1.671900e-02 
+ umax = 6.381264e-02 
+ umax = 8.389095e-03 
+ umax = 6.646751e-02 
+ umax = 6.070537e-02 
+Elapsed time: 32.203057 secs
+.
+Running MPI solver with n = 1024, nodes = 3 and procs per node = 2
+ umax = 4.371427e-02 
+ umax = 7.367130e-02 
+ umax = 6.638714e-02 
+ umax = 6.664251e-02 
+ umax = 4.314501e-02 
+ umax = 7.367034e-02 
+Elapsed time: 0.141694 secs
+.
+Running MPI solver with n = 2048, nodes = 3 and procs per node = 2
+ umax = 7.367134e-02 
+ umax = 6.664255e-02 
+ umax = 4.371429e-02 
+ umax = 7.367080e-02 
+ umax = 4.324036e-02 
+ umax = 6.643008e-02 
+Elapsed time: 0.497124 secs
+.
+Running MPI solver with n = 4096, nodes = 3 and procs per node = 2
+ umax = 6.653674e-02 
+ umax = 7.367129e-02 
+ umax = 4.352525e-02 
+ umax = 7.367135e-02 
+ umax = 4.366710e-02 
+ umax = 6.660033e-02 
+Elapsed time: 2.057439 secs
+.
+Running MPI solver with n = 8192, nodes = 3 and procs per node = 2
+ umax = 4.354892e-02 
+ umax = 6.654736e-02 
+ umax = 4.366711e-02 
+ umax = 6.660033e-02 
+ umax = 7.367132e-02 
+ umax = 7.367135e-02 
+Elapsed time: 8.503297 secs
+.
+Running MPI solver with n = 16384, nodes = 3 and procs per node = 2
+ umax = 6.658976e-02 
+ umax = 7.367135e-02 
+ umax = 6.657387e-02 
+ umax = 4.365530e-02 
+ umax = 4.361987e-02 
+Elapsed time: 36.761560 secs
+ umax = 7.367135e-02 
