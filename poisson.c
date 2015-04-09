@@ -15,6 +15,10 @@ void transpose (Real **transposed_grid, Real **grid, int grid_size);
 void fst_(Real *v, int *n, Real *w, int *nn);
 void fstinv_(Real *v, int *n, Real *w, int *nn);
 
+Real f( Real x, Real y )
+{
+	return 1.0; //change later
+}
 
 int main(int argc, char **argv )
 {
@@ -60,7 +64,7 @@ int main(int argc, char **argv )
   #pragma omp parallel for
   for (j=0; j < grid_size; j++) {
     for (i=0; i < grid_size; i++) {
-      grid[j][i] = point_distance * point_distance /* * f */;
+      grid[j][i] = point_distance * point_distance * f(j,i);
     }
   }
 
