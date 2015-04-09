@@ -6,24 +6,22 @@
 #include <omp.h>
 #include <mpi.h>
 
-typedef double Real;
-
 /* function prototypes */
-Real *createRealArray (int n);
-Real **createReal2DArray (int grid_size, int n);
-void transpose (Real **transposed_grid, Real **grid, int grid_size);
-void fst_(Real *v, int *n, Real *w, int *nn);
-void fstinv_(Real *v, int *n, Real *w, int *nn);
+double *createDoubleArray (int n);
+double **createDouble2DArray (int grid_size, int n);
+void transpose (double **transposed_grid, double **grid, int grid_size);
+void fst_(double *v, int *n, double *w, int *nn);
+void fstinv_(double *v, int *n, double *w, int *nn);
 
-Real f( Real x, Real y )
+double f( double x, double y )
 {
 	return 1.0; //change later
 }
 
 int main(int argc, char **argv )
 {
-  Real *diagonal, **grid, **transposed_grid, *z;
-  Real pi, point_distance, umax;
+  double *diagonal, **grid, **transposed_grid, *z;
+  double pi, point_distance, umax;
   int i, j, n, grid_size, nn, k, processors, threads, per_proc, world_size;
 
   /* the total number of grid points in each spatial direction is (n+1) */
@@ -48,17 +46,17 @@ int main(int argc, char **argv )
   MPI_Comm_rank( MPI_COMM_WORLD, &processors );
   MPI_Comm_size( MPI_COMM_WORLD, &world_size );
 
-  diagonal = createRealArray (grid_size);
-  grid     = createReal2DArray (grid_size,grid_size);
-  transposed_grid   = createReal2DArray (grid_size,grid_size);
-  z        = createRealArray (nn);
+  diagonal = createDoubleArray (grid_size);
+  grid     = createDouble2DArray (grid_size,grid_size);
+  transposed_grid   = createDouble2DArray (grid_size,grid_size);
+  z        = createDoubleArray (nn);
 
-  point_distance    = 1./(Real)n;
+  point_distance    = 1./(double)n;
   pi   = 4.*atan(1.);
 
   #pragma omp parallel for
   for (i=0; i < grid_size; i++) {
-    diagonal[i] = 2.*(1.-cos((i+1)*pi/(Real)n));
+    diagonal[i] = 2.*(1.-cos((i+1)*pi/(double)n));
   }
 
   #pragma omp parallel for
@@ -113,7 +111,7 @@ int main(int argc, char **argv )
   return 0;
 }
 
-void transpose (Real **transposed_grid, Real **grid, int grid_size)
+void transpose (double **transposed_grid, double **grid, int grid_size)
 {
   int i, j;
   for (j=0; j < grid_size; j++) {
@@ -123,27 +121,27 @@ void transpose (Real **transposed_grid, Real **grid, int grid_size)
   }
 }
 
-Real *createRealArray (int n)
+double *createDoubleArray (int n)
 {
-  Real *a;
+  double *a;
   int i;
-  a = (Real *)malloc(n*sizeof(Real));
+  a = (double *)malloc(n*sizeof(double));
   for (i=0; i < n; i++) {
     a[i] = 0.0;
   }
   return (a);
 }
 
-Real **createReal2DArray (int n1, int n2)
+double **createDouble2DArray (int n1, int n2)
 {
   int i, n;
-  Real **a;
-  a    = (Real **)malloc(n1   *sizeof(Real *));
-  a[0] = (Real  *)malloc(n1*n2*sizeof(Real));
+  double **a;
+  a    = (double **)malloc(n1   *sizeof(double *));
+  a[0] = (double  *)malloc(n1*n2*sizeof(double));
   for (i=1; i < n1; i++) {
     a[i] = a[i-1] + n2;
   }
   n = n1*n2;
-  memset(a[0],0,n*sizeof(Real));
+  memset(a[0],0,n*sizeof(double));
   return (a);
 }
