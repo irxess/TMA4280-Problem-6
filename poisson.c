@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <memory.h>
 #include <math.h>
+#include <omp.h>
+#include <mpi.h>
 
 typedef double Real;
 
@@ -18,7 +20,7 @@ int main(int argc, char **argv )
 {
   Real *diagonal, **grid, **transposed_grid, *z;
   Real pi, point_distance, umax;
-  int i, j, n, grid_size, nn, k, processors, threads;
+  int i, j, n, grid_size, nn, k, processors, threads, per_proc, world_size;
 
   /* the total number of grid points in each spatial direction is (n+1) */
   /* the total number of degrees-of-freedom in each spatial direction is (n-1) */
@@ -35,6 +37,13 @@ int main(int argc, char **argv )
   grid_size  = n-1;
   nn = 4*n;
 
+  per_proc = grid_size / processors;
+  omp_set_num_threads( threads );
+
+  MPI_Init( &argc, &argv );
+  MPI_Comm_rank( MPI_COMM_WORLD, &processors );
+  MPI_Comm_size( MPI_COMM_WORLD, &world_size );
+
   diagonal = createRealArray (grid_size);
   grid     = createReal2DArray (grid_size,grid_size);
   transposed_grid   = createReal2DArray (grid_size,grid_size);
@@ -43,46 +52,56 @@ int main(int argc, char **argv )
   point_distance    = 1./(Real)n;
   pi   = 4.*atan(1.);
 
+  #pragma omp parallel for
   for (i=0; i < grid_size; i++) {
     diagonal[i] = 2.*(1.-cos((i+1)*pi/(Real)n));
   }
 
+  #pragma omp parallel for
   for (j=0; j < grid_size; j++) {
     for (i=0; i < grid_size; i++) {
       grid[j][i] = point_distance * point_distance /* * f */;
     }
   }
 
+  #pragma omp parallel for
   for (j=0; j < grid_size; j++) {
     fst_(grid[j], &n, z, &nn);
   }
 
   transpose( transposed_grid, grid, grid_size );
 
+  #pragma omp parallel for
   for (i=0; i < grid_size; i++) {
     fstinv_( transposed_grid[i], &n, z, &nn );
   }
   
+  #pragma omp parallel for
   for (j=0; j < grid_size; j++) {
     for (i=0; i < grid_size; i++) {
-      transposed_grid[j][i] = transposed_grid[j][i]/(diagonal[i]+diagonal[j]);
+      transposed_grid[j][i] = transposed_grid[j][i] / (diagonal[i]+diagonal[j]);
     }
   }
   
+  #pragma omp parallel for
   for (i=0; i < grid_size; i++) {
     fst_(transposed_grid[i], &n, z, &nn);
   }
 
   transpose( grid, transposed_grid, grid_size );
 
+  #pragma omp parallel for
   for (j=0; j < grid_size; j++) {
     fstinv_( grid[j], &n, z, &nn );
   }
 
   umax = 0.0;
+  #pragma omp parallel for
   for (j=0; j < grid_size; j++) {
     for (i=0; i < grid_size; i++) {
-      if (grid[j][i] > umax) umax = grid[j][i];
+      if (grid[j][i] > umax) 
+		  #pragma omp critical
+		  umax = grid[j][i];
     }
   }
   printf (" umax = %e \n",umax);
