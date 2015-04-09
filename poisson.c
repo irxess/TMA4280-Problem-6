@@ -1,13 +1,3 @@
-/*
-  C-program to solve the two-dimensional Poisson equation on 
-  a unit square using one-dimensional eigenvalue decompositions
-  and fast sine transforms
-
-  einar m. ronquist
-  ntnu, october 2000
-  revised, october 2001
-*/
-
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,17 +8,17 @@ typedef double Real;
 
 /* function prototypes */
 Real *createRealArray (int n);
-Real **createReal2DArray (int m, int n);
-void transpose (Real **bt, Real **b, int m);
+Real **createReal2DArray (int grid_size, int n);
+void transpose (Real **transposed_grid, Real **grid, int grid_size);
 void fst_(Real *v, int *n, Real *w, int *nn);
 void fstinv_(Real *v, int *n, Real *w, int *nn);
 
 
 int main(int argc, char **argv )
 {
-  Real *diag, **b, **bt, *z;
-  Real pi, h, umax;
-  int i, j, n, m, nn;
+  Real *diagonal, **grid, **transposed_grid, *z;
+  Real pi, point_distance, umax;
+  int i, j, n, grid_size, nn, k, processors, threads;
 
   /* the total number of grid points in each spatial direction is (n+1) */
   /* the total number of degrees-of-freedom in each spatial direction is (n-1) */
@@ -39,56 +29,60 @@ int main(int argc, char **argv )
     return 1;
   }
 
-  n  = atoi(argv[1]);
-  m  = n-1;
+  n = pow( 2, atoi( argv[1]) );
+  processors = atoi( argv[2] );
+  threads    = atoi( argv[3] );
+  grid_size  = n-1;
   nn = 4*n;
 
-  diag = createRealArray (m);
-  b    = createReal2DArray (m,m);
-  bt   = createReal2DArray (m,m);
-  z    = createRealArray (nn);
+  diagonal = createRealArray (grid_size);
+  grid     = createReal2DArray (grid_size,grid_size);
+  transposed_grid   = createReal2DArray (grid_size,grid_size);
+  z        = createRealArray (nn);
 
-  h    = 1./(Real)n;
+  point_distance    = 1./(Real)n;
   pi   = 4.*atan(1.);
 
-  for (i=0; i < m; i++) {
-    diag[i] = 2.*(1.-cos((i+1)*pi/(Real)n));
+  for (i=0; i < grid_size; i++) {
+    diagonal[i] = 2.*(1.-cos((i+1)*pi/(Real)n));
   }
-  for (j=0; j < m; j++) {
-    for (i=0; i < m; i++) {
-      b[j][i] = h*h;
+
+  for (j=0; j < grid_size; j++) {
+    for (i=0; i < grid_size; i++) {
+      grid[j][i] = point_distance * point_distance /* * f */;
     }
   }
-  for (j=0; j < m; j++) {
-    fst_(b[j], &n, z, &nn);
+
+  for (j=0; j < grid_size; j++) {
+    fst_(grid[j], &n, z, &nn);
   }
 
-  transpose (bt,b,m);
+  transpose( transposed_grid, grid, grid_size );
 
-  for (i=0; i < m; i++) {
-    fstinv_(bt[i], &n, z, &nn);
+  for (i=0; i < grid_size; i++) {
+    fstinv_( transposed_grid[i], &n, z, &nn );
   }
   
-  for (j=0; j < m; j++) {
-    for (i=0; i < m; i++) {
-      bt[j][i] = bt[j][i]/(diag[i]+diag[j]);
+  for (j=0; j < grid_size; j++) {
+    for (i=0; i < grid_size; i++) {
+      transposed_grid[j][i] = transposed_grid[j][i]/(diagonal[i]+diagonal[j]);
     }
   }
   
-  for (i=0; i < m; i++) {
-    fst_(bt[i], &n, z, &nn);
+  for (i=0; i < grid_size; i++) {
+    fst_(transposed_grid[i], &n, z, &nn);
   }
 
-  transpose (b,bt,m);
+  transpose( grid, transposed_grid, grid_size );
 
-  for (j=0; j < m; j++) {
-    fstinv_(b[j], &n, z, &nn);
+  for (j=0; j < grid_size; j++) {
+    fstinv_( grid[j], &n, z, &nn );
   }
 
   umax = 0.0;
-  for (j=0; j < m; j++) {
-    for (i=0; i < m; i++) {
-      if (b[j][i] > umax) umax = b[j][i];
+  for (j=0; j < grid_size; j++) {
+    for (i=0; i < grid_size; i++) {
+      if (grid[j][i] > umax) umax = grid[j][i];
     }
   }
   printf (" umax = %e \n",umax);
@@ -96,12 +90,12 @@ int main(int argc, char **argv )
   return 0;
 }
 
-void transpose (Real **bt, Real **b, int m)
+void transpose (Real **transposed_grid, Real **grid, int grid_size)
 {
   int i, j;
-  for (j=0; j < m; j++) {
-    for (i=0; i < m; i++) {
-      bt[j][i] = b[i][j];
+  for (j=0; j < grid_size; j++) {
+    for (i=0; i < grid_size; i++) {
+      transposed_grid[j][i] = grid[i][j];
     }
   }
 }
