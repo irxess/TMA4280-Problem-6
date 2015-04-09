@@ -49,7 +49,7 @@ int main(int argc, char **argv )
 
   for (j=0; j < grid_size; j++) {
     for (i=0; i < grid_size; i++) {
-      grid[j][i] = point_distance * point_distance;
+      grid[j][i] = point_distance * point_distance /* * f */;
     }
   }
 
