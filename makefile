@@ -1,15 +1,17 @@
-CC=clang
-FC=gfortran
+CC=mpicc
+CXX=icpc
+FC=ifort
 
 poisson: poisson.o fst.o
-	$(CC) -fopenmp  $^ $(shell pkg-config ompi-c --libs) -lm
+	$(CC) -openmp  $^ -lm -o ex6
 
 fst.o:  fst.f
 	$(FC) -c  $< 
 
 %.o : %.c 
-	$(CC) -c $< $(shell pkg-config ompi-c --cflags) 
+	$(CC) -c -openmp $<
 
-.PHONY:	
 clean:	
 	rm -f *.o 
+
+.PHONY:	clean
