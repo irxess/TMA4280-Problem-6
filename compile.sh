@@ -7,3 +7,7 @@ module load openmpi/1.4.3-intel
 
 rm ex6
 make clean && make && chmod +x ex6
+
+mpirun -np 4 ./ex6 3 4
+mpirun -np 4 ./ex6 3 6
+mpirun -np 4 ./ex6 3 16

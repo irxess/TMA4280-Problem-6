@@ -34,17 +34,16 @@ int main(int argc, char **argv )
   }
 
   n = pow( 2, atoi( argv[1]) );
-  processors = atoi( argv[2] );
-  threads    = atoi( argv[3] );
+  threads    = atoi( argv[2] );
   grid_size  = n-1;
   nn = 4*n;
 
-  per_proc = grid_size / processors;
   omp_set_num_threads( threads );
 
   MPI_Init( &argc, &argv );
   MPI_Comm_rank( MPI_COMM_WORLD, &processors );
   MPI_Comm_size( MPI_COMM_WORLD, &world_size );
+  per_proc = grid_size / processors;
 
   diagonal = createDoubleArray (grid_size);
   grid     = createDouble2DArray (grid_size,grid_size);
@@ -98,17 +97,28 @@ int main(int argc, char **argv )
   }
 
   umax = 0.0;
-  #pragma omp parallel for
+  // TODO: MPI scatter, gather
   for (j=0; j < grid_size; j++) {
     for (i=0; i < grid_size; i++) {
       if (grid[j][i] > umax) 
-		  #pragma omp critical
 		  umax = grid[j][i];
     }
   }
   printf (" umax = %e \n",umax);
 
+  MPI_Finalize();
+
   return 0;
+}
+
+void parallel_transpose (double **transposed_grid, double **grid, int grid_size)
+{
+  int i, j;
+  for (j=0; j < grid_size; j++) {
+    for (i=0; i < grid_size; i++) {
+      transposed_grid[j][i] = grid[i][j];
+    }
+  }
 }
 
 void transpose (double **transposed_grid, double **grid, int grid_size)
