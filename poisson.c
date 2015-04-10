@@ -10,6 +10,7 @@
 double *createDoubleArray (int n);
 double **createDouble2DArray (int grid_size, int n);
 void transpose (double **transposed_grid, double **grid, int grid_size);
+void parallel_transpose (double **transposed_grid, double **grid, int grid_size);
 void fst_(double *v, int *n, double *w, int *nn);
 void fstinv_(double *v, int *n, double *w, int *nn);
 
@@ -22,7 +23,7 @@ int main(int argc, char **argv )
 {
   double *diagonal, **grid, **transposed_grid, *z;
   double pi, point_distance, umax;
-  int i, j, n, grid_size, nn, k, processors, threads, per_proc, world_size;
+  int i, j, n, grid_size, nn, k, proc_id, threads, per_proc, proc_num;
 
   /* the total number of grid points in each spatial direction is (n+1) */
   /* the total number of degrees-of-freedom in each spatial direction is (n-1) */
@@ -41,9 +42,9 @@ int main(int argc, char **argv )
   omp_set_num_threads( threads );
 
   MPI_Init( &argc, &argv );
-  MPI_Comm_rank( MPI_COMM_WORLD, &processors );
-  MPI_Comm_size( MPI_COMM_WORLD, &world_size );
-  per_proc = grid_size / processors;
+  MPI_Comm_rank( MPI_COMM_WORLD, &proc_id );
+  MPI_Comm_size( MPI_COMM_WORLD, &proc_num );
+  per_proc = grid_size / proc_num;
 
   diagonal = createDoubleArray (grid_size);
   grid     = createDouble2DArray (grid_size,grid_size);
@@ -70,7 +71,8 @@ int main(int argc, char **argv )
     fst_(grid[j], &n, z, &nn);
   }
 
-  transpose( transposed_grid, grid, grid_size );
+  parallel_transpose( transposed_grid, grid, grid_size );
+  MPI_Barrier( MPI_COMM_WORLD );
 
   #pragma omp parallel for
   for (i=0; i < grid_size; i++) {
@@ -89,7 +91,8 @@ int main(int argc, char **argv )
     fst_(transposed_grid[i], &n, z, &nn);
   }
 
-  transpose( grid, transposed_grid, grid_size );
+  parallel_transpose( transposed_grid, grid, grid_size );
+  MPI_Barrier( MPI_COMM_WORLD );
 
   #pragma omp parallel for
   for (j=0; j < grid_size; j++) {
@@ -101,10 +104,13 @@ int main(int argc, char **argv )
   for (j=0; j < grid_size; j++) {
     for (i=0; i < grid_size; i++) {
       if (grid[j][i] > umax) 
+		  // TODO use f to calculate error
 		  umax = grid[j][i];
     }
   }
-  printf (" umax = %e \n",umax);
+  //MPI_Reduce( &umax, recvbuf, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD );
+  if (proc_id == 0)
+  	printf (" umax = %e \n",umax);
 
   MPI_Finalize();
 
@@ -113,6 +119,18 @@ int main(int argc, char **argv )
 
 void parallel_transpose (double **transposed_grid, double **grid, int grid_size)
 {
+	// n/p x n per cpu
+	// n/p x n/p per block (p blocks)
+	// divide grid into equal sized blocks
+	// transpose each block locally
+	// all to all communication to send transposed blocks
+	// merge to n/p x n matrix locally
+	
+	// MPI_Alltoallv( *sendbuf, array of num of items sent to each process, 
+	// index of first element in items sent to proc, sendtype,
+	// *recvbuf, array of num of items max received from each process, 
+	// result i position in recvbuffer, recvtype,
+	// MPI_WORLD_COMM );
   int i, j;
   for (j=0; j < grid_size; j++) {
     for (i=0; i < grid_size; i++) {
