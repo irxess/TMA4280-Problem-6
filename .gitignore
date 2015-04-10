@@ -27,3 +27,6 @@
 *.out
 *.app
 ex6
+
+# Vim files
+*.swp
