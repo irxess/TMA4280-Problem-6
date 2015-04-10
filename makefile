@@ -9,7 +9,7 @@ fst.o:  fst.f
 	$(FC) -c  $< 
 
 %.o : %.c 
-	$(CC) -c -openmp $<
+	$(CC) -c -g -openmp $<
 
 clean:	
 	rm -f *.o 
