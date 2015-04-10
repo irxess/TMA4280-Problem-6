@@ -23,7 +23,8 @@ int main(int argc, char **argv )
 {
   double *diagonal, **grid, **transposed_grid, *z;
   double pi, point_distance, umax;
-  int i, j, n, grid_size, nn, k, proc_id, threads, per_proc, proc_num;
+  int i, j, n, grid_size, nn, k, proc_id, threads, proc_num;
+  int *rows_in_proc;
 
   /* the total number of grid points in each spatial direction is (n+1) */
   /* the total number of degrees-of-freedom in each spatial direction is (n-1) */
@@ -39,13 +40,6 @@ int main(int argc, char **argv )
   grid_size  = n-1;
   nn = 4*n;
 
-  omp_set_num_threads( threads );
-
-  MPI_Init( &argc, &argv );
-  MPI_Comm_rank( MPI_COMM_WORLD, &proc_id );
-  MPI_Comm_size( MPI_COMM_WORLD, &proc_num );
-  per_proc = grid_size / proc_num;
-
   diagonal = createDoubleArray (grid_size);
   grid     = createDouble2DArray (grid_size,grid_size);
   transposed_grid   = createDouble2DArray (grid_size,grid_size);
@@ -53,6 +47,24 @@ int main(int argc, char **argv )
 
   point_distance    = 1./(double)n;
   pi   = 4.*atan(1.);
+
+  MPI_Init( &argc, &argv );
+  MPI_Comm_rank( MPI_COMM_WORLD, &proc_id );
+  MPI_Comm_size( MPI_COMM_WORLD, &proc_num );
+  omp_set_num_threads( threads );
+
+  // todo: calculate once, scatter to all 
+  rows_in_proc = malloc( sizeof(int)*proc_num );
+  int num_rows = grid_size / proc_num;
+  int more_rows = grid_size % proc_num;
+  #pragma omp parallel for
+  for( i=0; i<more_rows; i++ ){
+	  rows_in_proc[i] = num_rows + 1;
+  }
+  #pragma omp parallel for
+  for( i=more_rows; i<proc_num; i++ ){
+	  rows_in_proc[i] = num_rows;
+  }
 
   #pragma omp parallel for
   for (i=0; i < grid_size; i++) {
@@ -108,9 +120,10 @@ int main(int argc, char **argv )
 		  umax = grid[j][i];
     }
   }
-  //MPI_Reduce( &umax, recvbuf, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD );
+  double global_umax = 0.0;
+  MPI_Reduce( &umax, &global_umax, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD );
   if (proc_id == 0)
-  	printf (" umax = %e \n",umax);
+  	printf ("umax = %e\n", global_umax);
 
   MPI_Finalize();
 
